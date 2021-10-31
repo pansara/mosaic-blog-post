@@ -9,7 +9,6 @@ class Api::PostsController < Api::ApiController
 
     result = tags.each_with_object({}) do |tag, result|
       th = Thread.new do
-        byebug
         fetch_posts(tag).each do |key, value| # {"posts": [{"id": 1}]}
           if result[key].nil?
             result[key] = value
@@ -33,6 +32,8 @@ class Api::PostsController < Api::ApiController
         else
           result[result.keys[0]].sort_by! { |entry| entry[posts_params[:sortBy]] }
         end
+      else
+        return render json: { "error": "direction parameter is invalid" }, status: 400
       end
     else
       return render json: { "error": "sortBy parameter is invalid" }, status: 400
